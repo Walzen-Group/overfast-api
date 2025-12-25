@@ -1,0 +1,30 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Build Overfast Image
+      run: |
+        REPO="overfast"
+        docker build . \
+          --file Dockerfile \
+          --tag $REPO:${{ github.sha }} \
+          --tag $REPO:latest
+
+    - name: Build Valkey Image
+      run: |
+        REPO="valkey"
+        docker build ./build/valkey \
+          --file ./build/valkey/Dockerfile \
+          --tag $REPO:${{ github.sha }} \
+          --tag $REPO:latest
